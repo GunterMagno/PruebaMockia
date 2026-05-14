@@ -67,6 +67,43 @@
   box-shadow: 0 0 10px var(--accent);
 }
 
+.view-switcher {
+  display: flex;
+  gap: 8px;
+}
+
+.view-switcher button {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--glass-border);
+  color: var(--text-muted);
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+
+.view-switcher button.active {
+  background: var(--primary);
+  color: #000;
+  border-color: var(--primary);
+}
+
+.json-viewer {
+  background: rgba(0, 0, 0, 0.3);
+  padding: 16px;
+  border-radius: 8px;
+  max-height: 300px;
+  overflow: auto;
+  border: 1px solid var(--glass-border);
+}
+
+.json-viewer pre {
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  font-size: 0.8rem;
+  color: var(--primary);
+  line-height: 1.4;
+}
+
 .endpoints-list {
   display: flex;
   flex-direction: column;

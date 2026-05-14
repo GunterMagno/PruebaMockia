@@ -26,8 +26,10 @@ import './App.css';
 function App() {
   const [backendUrl, setBackendUrl] = useState('');
   const [tempUrl, setTempUrl] = useState('');
+  const [apiKey, setApiKey] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [manifestData, setManifestData] = useState(null);
   
   // Modals state
   const [activeModal, setActiveModal] = useState(null);
@@ -66,12 +68,33 @@ function App() {
     setLoading(true);
     setError(null);
     const baseUrl = url.endsWith('/') ? url.slice(0, -1) : url;
+    
+    const headers = {
+      'X-Mockia-API-Key': apiKey,
+      'Cache-Control': 'no-cache',
+      'Pragma': 'no-cache',
+      'Expires': '0'
+    };
+
+    const t = Date.now();
 
     try {
+      // Try to fetch manifest/discovery info if available
+      try {
+        const manifestRes = await axios.get(`${baseUrl}/manifest?_t=${t}`, { headers });
+        setManifestData(manifestRes.data);
+      } catch (e) {
+        // Manifest not found, we'll use the hardcoded discovery list
+        setManifestData({
+          info: "Standard Mockia Endpoints Detected",
+          endpoints: endpoints.map(e => `${e.method} ${e.path}`)
+        });
+      }
+
       const [infoRes, menuRes, staffRes] = await Promise.allSettled([
-        axios.get(`${baseUrl}/info`),
-        axios.get(`${baseUrl}/menu`),
-        axios.get(`${baseUrl}/staff`)
+        axios.get(`${baseUrl}/info?_t=${t}`, { headers }),
+        axios.get(`${baseUrl}/menu?_t=${t}`, { headers }),
+        axios.get(`${baseUrl}/staff?_t=${t}`, { headers })
       ]);
 
       if (infoRes.status === 'fulfilled') {
@@ -91,7 +114,7 @@ function App() {
       
       setBackendUrl(baseUrl);
     } catch (err) {
-      setError('Error connecting to backend');
+      setError('Error connecting to backend. Check your URL and API Key.');
     } finally {
       setLoading(false);
     }
@@ -107,7 +130,9 @@ function App() {
     if (!backendUrl) return;
     setBookingLoading(true);
     try {
-      await axios.post(`${backendUrl}/reservations`, resForm);
+      await axios.post(`${backendUrl}/reservations`, resForm, {
+        headers: { 'X-Mockia-API-Key': apiKey }
+      });
       setBookingSuccess(true);
       updateEndpointStatus('/reservations', 'success');
       setTimeout(() => {
@@ -116,7 +141,7 @@ function App() {
       }, 3000);
     } catch (err) {
       updateEndpointStatus('/reservations', 'error');
-      setError('Reservation failed. Endpoint /reservations not found?');
+      setError('Reservation failed. Check your API Key or endpoint.');
     } finally {
       setBookingLoading(false);
     }
@@ -139,6 +164,15 @@ function App() {
               placeholder="Enter Mockia Backend URL" 
               value={tempUrl}
               onChange={(e) => setTempUrl(e.target.value)}
+            />
+          </div>
+          <div className="input-wrapper key-input">
+            <ShieldCheck size={18} className="input-icon" />
+            <input 
+              type="password" 
+              placeholder="X-Mockia-API-Key" 
+              value={apiKey}
+              onChange={(e) => setApiKey(e.target.value)}
             />
           </div>
           <button type="submit" className="connect-btn" disabled={loading}>
@@ -237,7 +271,7 @@ function App() {
       </footer>
 
       {/* Discovery Panel - Automated Scanner Support */}
-      <DiscoveryPanel endpoints={endpoints} backendUrl={backendUrl} />
+      <DiscoveryPanel endpoints={endpoints} backendUrl={backendUrl} manifestData={manifestData} />
 
       {/* Modals - Improved */}
       {activeModal && (
