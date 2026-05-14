@@ -1,0 +1,137 @@
+.glass-card-wrapper {
+  position: relative;
+  cursor: pointer;
+  height: 100%;
+}
+
+.glass-card {
+  height: 100%;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: var(--transition-smooth);
+  z-index: 2;
+  position: relative;
+}
+
+.glass-card-wrapper:hover .glass-card {
+  transform: translateY(-10px);
+  border-color: var(--primary);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+}
+
+.card-image-section {
+  position: relative;
+  height: 220px;
+  overflow: hidden;
+}
+
+.card-image-section img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: var(--transition-smooth);
+}
+
+.glass-card-wrapper:hover .card-image-section img {
+  transform: scale(1.1);
+}
+
+.card-badge {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  background: var(--primary);
+  color: #000;
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.endpoint-marker {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+  color: var(--primary);
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.65rem;
+  font-family: monospace;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  border: 1px solid var(--primary-glow);
+}
+
+.card-content-section {
+  padding: 24px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.card-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+.card-header-row h3 {
+  font-size: 1.25rem;
+  color: #fff;
+}
+
+.card-price {
+  color: var(--primary);
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.card-desc {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  line-height: 1.6;
+  margin-bottom: 24px;
+  flex: 1;
+}
+
+.view-details-btn {
+  width: 100%;
+  padding: 12px;
+  background: rgba(212, 175, 55, 0.1);
+  color: var(--primary);
+  border: 1px solid var(--primary-glow);
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+}
+
+.glass-card-wrapper:hover .view-details-btn {
+  background: var(--primary);
+  color: #000;
+}
+
+.card-glow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at 50% 50%, var(--primary-glow), transparent 70%);
+  opacity: 0;
+  transition: var(--transition-smooth);
+  filter: blur(30px);
+  z-index: 1;
+}
+
+.glass-card-wrapper:hover .card-glow {
+  opacity: 0.5;
+  transform: scale(1.1);
+}
